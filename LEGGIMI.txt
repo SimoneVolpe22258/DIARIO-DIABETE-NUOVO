@@ -1,0 +1,4 @@
+DIARIO DIABETE 0.1.3
+Correzioni: cache network-first, numero versione visibile, verifica lettura dopo salvataggio farmaco e messaggio di errore/successo.
+Non cancellare i dati del browser: contengono le registrazioni.
+Non pubblicare dati sanitari personali nel repository.
