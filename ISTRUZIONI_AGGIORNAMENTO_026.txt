@@ -1,0 +1,1 @@
+Diario Diabete v0.2.6 – Controllo doppie glicemie\n1. Sul Samsung apri Dati ed esporta il backup JSON prima di eliminare.\n2. Nella sezione Controllo doppie glicemie esamina i gruppi.\n3. Seleziona solo le copie da eliminare e conferma.\n4. Le eliminazioni vengono propagate anche via sincronizzazione, se attiva.\n5. Non cancellare dati del browser e non disinstallare la PWA.\n
