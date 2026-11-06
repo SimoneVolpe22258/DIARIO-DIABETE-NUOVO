@@ -1,0 +1,4 @@
+Diario Diabete v0.3.2
+Nella tabella Diario, sotto le intestazioni TERAPIA (Colazione, Pranzo, Cena, Sera, Insulina), sono mostrati automaticamente i nomi dei farmaci configurati nella sezione Terapia, validi per almeno un giorno della settimana visualizzata. Nessun nome di farmaco e inserito nel codice. Le caselle delle assunzioni restano invariate.
+
+Prima dell aggiornamento esportare un backup JSON dal Samsung. Pubblicare tutti i file su GitHub Pages senza disinstallare la PWA o cancellare i dati locali.

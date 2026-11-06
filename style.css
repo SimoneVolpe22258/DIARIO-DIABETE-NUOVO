@@ -17,3 +17,8 @@
 
 /* Firma visibile nell’intestazione comune di tutte le sezioni */
 .app-brand{flex-shrink:0}.app-signature{display:block!important;visibility:visible!important;opacity:1!important}
+
+/* Intestazioni terapia: nomi aggiornati automaticamente dalle prescrizioni attive nella settimana. */
+.week th.therapy-label{white-space:normal;min-width:92px;max-width:150px;vertical-align:middle;overflow-wrap:anywhere}
+.week .therapy-moment{display:block;font-size:.75rem;font-weight:700}
+.week .therapy-names{display:block;margin-top:4px;font-size:.69rem;line-height:1.3;font-weight:500;color:#38516c}
