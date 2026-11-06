@@ -11,3 +11,6 @@
 /* Revisione duplicati */
 .duplicate-row{display:flex;align-items:center;gap:10px;margin:8px 0;font-size:13px;overflow-wrap:anywhere}
 .duplicate-row input{width:20px;height:20px;flex-shrink:0}
+
+/* Curva glicemica v0.2.9 */
+.app-brand{display:flex;flex-direction:column;gap:1px}.app-signature{font-size:.63rem;color:#70829a;letter-spacing:.03em;font-weight:400}.diary-tabs{display:flex;gap:8px;margin:0 0 16px}.diary-tabs button{flex:1;min-width:0;font-size:.88rem}.chart-controls{display:flex;align-items:center;gap:12px;margin-bottom:12px}.chart-controls label{margin:0}.chart-controls select{width:auto;max-width:100%;min-width:165px}.chart-stats{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}.chart-stats span{background:#f0f5fa;border-radius:9px;padding:8px 11px;font-size:.83rem}.chart-scroll{width:100%;overflow-x:auto}.glucose-chart{display:block;width:100%;min-width:550px;height:auto;background:white}.chart-hit{cursor:pointer}.chart-hit:focus{stroke:#173a68;stroke-width:2}.chart-legend{display:flex;flex-wrap:wrap;gap:10px;font-size:.78rem;margin:12px 0}.chart-detail{padding:10px;background:#f0f5fb;border-radius:9px;font-size:.85rem;min-height:40px}@media(max-width:450px){header{gap:7px}header strong{font-size:.96rem}header small{font-size:.57rem}.drop{font-size:1.3rem}}

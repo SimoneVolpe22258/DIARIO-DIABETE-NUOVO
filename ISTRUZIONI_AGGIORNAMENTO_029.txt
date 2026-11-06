@@ -1,0 +1,7 @@
+Diario Diabete 0.2.9 – Curva glicemica e firma by Simone Volpe
+
+Caricare tutti i file su GitHub Pages, sostituendo i precedenti.
+Prima dell’aggiornamento esportare il backup JSON dal Samsung.
+Non disinstallare la PWA e non cancellare i dati del browser.
+Diario > Curva glicemica: periodi 1/7/14/30 giorni; curva interpolata e colorata, con interruzioni per intervalli > 8 ore.
+Non vengono modificati database, sincronizzazione o record esistenti.
