@@ -1,0 +1,5 @@
+Diario Diabete 0.3.1
+- Corretto il numero di versione in app.js e intestazione.
+- Curva collegata in modo continuo tra misurazioni con timestamp differenti; resta una interpolazione grafica, non un monitoraggio continuo.
+- Firma by Simone Volpe nell’intestazione comune a tutte le pagine.
+Prima di aggiornare, esportare un backup JSON dal Samsung. Non cancellare i dati del sito e non disinstallare la PWA.

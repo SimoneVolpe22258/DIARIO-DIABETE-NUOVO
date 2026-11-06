@@ -1,6 +1,6 @@
 'use strict';
 const KEY='diario-diabete-v01';
-const APP_VERSION='0.2.9';
+const APP_VERSION='0.3.1';
 const contexts=['A digiuno','Prima di colazione','2 ore dopo colazione','Prima di pranzo','2 ore dopo pranzo','Prima di cena','2 ore dopo cena','Prima di dormire','Misurazione libera'];
 let meds=[];let medicationNames={};
 const seed=[];
@@ -67,8 +67,9 @@ function renderCurve(entries){
  const grid=Array.from({length:6},(_,i)=>{let v=minY+(maxY-minY)*i/5,y=Y(v);return `<line x1="${L}" y1="${y}" x2="${W-R}" y2="${y}" stroke="#e5edf5"/><text x="${L-9}" y="${y+4}" text-anchor="end" font-size="12" fill="#52647a">${Math.round(v)}</text>`}).join('');
  const tickCount=Math.min(chartDays,7)+1;
  const ticks=Array.from({length:tickCount},(_,i)=>{let t=minT+(maxT-minT)*i/(tickCount-1),x=X(t),d=new Date(t);return `<text x="${x}" y="${H-26}" text-anchor="middle" font-size="11" fill="#52647a">${d.toLocaleDateString('it-IT',{day:'2-digit',month:'2-digit'})}</text>`}).join('');
- // Spezzare i tratti oltre 8 ore: non rappresentiamo un monitoraggio continuo.
- let groups=[],group=[];for(const point of pts){if(group.length&&(point.t-group[group.length-1].t)>8*3600000){groups.push(group);group=[]}group.push(point)}if(group.length)groups.push(group);
+ // Curva visivamente continua: i collegamenti tra rilevazioni non sono misure reali.
+ // Raggruppa solo letture con identico timestamp per evitare divisioni per zero.
+ let groups=[],group=[];for(const point of pts){if(group.length&&point.t===group[group.length-1].t){groups.push(group);group=[]}group.push(point)}if(group.length)groups.push(group);
  let paths='';for(const g of groups){if(g.length<2)continue;
   // Derivate di Hermite limitate per mantenere la monotonia di ogni tratto.
   const dx=g.slice(1).map((q,i)=>q.t-g[i].t),slopes=dx.map((d,i)=>(g[i+1].v-g[i].v)/d),m=g.map((q,i)=>i===0?slopes[0]:i===g.length-1?slopes.at(-1):(slopes[i-1]*slopes[i]<=0?0:Math.sign(slopes[i])*Math.min(Math.abs(slopes[i-1]),Math.abs(slopes[i]),.5*Math.abs(slopes[i-1]+slopes[i]))));
@@ -78,7 +79,7 @@ function renderCurve(entries){
  }
  const dots=pts.map((q,i)=>`<circle cx="${X(q.t)}" cy="${Y(q.v)}" r="5.5" fill="${chartColor(q.v)}" stroke="white" stroke-width="2"><title>${esc(q.date+' '+q.time+' · '+q.v+' mg/dL · '+q.context)}</title></circle><circle class="chart-hit" cx="${X(q.t)}" cy="${Y(q.v)}" r="15" fill="transparent" data-action="chartPoint" data-index="${i}" tabindex="0" role="button" aria-label="${esc(q.date+' '+q.time+' '+q.v+' mg/dL')}"/>`).join('');
  const mean=Math.round(pts.reduce((n,q)=>n+q.v,0)/pts.length);
- return `<h1>📈 Curva glicemica</h1>${tabs}<section class="card">${controls}<div class="chart-stats"><span>Min <b>${Math.min(...pts.map(q=>q.v))}</b></span><span>Media <b>${mean}</b></span><span>Max <b>${Math.max(...pts.map(q=>q.v))}</b></span><span>${pts.length} misurazioni</span></div><div class="chart-scroll"><svg class="glucose-chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Andamento glicemico, punti misurati collegati da tratti morbidi, con interruzioni superiori a otto ore"><text x="${L}" y="14" font-size="12" fill="#52647a">mg/dL</text>${grid}${ticks}${paths}${dots}</svg></div><div class="chart-legend"><span>🔵 &lt;70</span><span>🟢 70–180</span><span>🟠 181–250</span><span>🔴 &gt;250 mg/dL</span></div><div id="chartDetail" class="chart-detail" aria-live="polite">Tocca un punto per visualizzare data, ora, valore e contesto.</div><p class="legend">La curva è interpolata: solo i punti sono misurazioni reali. I collegamenti si interrompono per intervalli superiori a 8 ore. Le fasce cromatiche sono indicative e non sostituiscono gli obiettivi personalizzati del diabetologo.</p></section>`;
+ return `<h1>📈 Curva glicemica</h1>${tabs}<section class="card">${controls}<div class="chart-stats"><span>Min <b>${Math.min(...pts.map(q=>q.v))}</b></span><span>Media <b>${mean}</b></span><span>Max <b>${Math.max(...pts.map(q=>q.v))}</b></span><span>${pts.length} misurazioni</span></div><div class="chart-scroll"><svg class="glucose-chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Andamento glicemico, punti misurati collegati da tratti morbidi, con collegamenti interpolati tra le misurazioni"><text x="${L}" y="14" font-size="12" fill="#52647a">mg/dL</text>${grid}${ticks}${paths}${dots}</svg></div><div class="chart-legend"><span>🔵 &lt;70</span><span>🟢 70–180</span><span>🟠 181–250</span><span>🔴 &gt;250 mg/dL</span></div><div id="chartDetail" class="chart-detail" aria-live="polite">Tocca un punto per visualizzare data, ora, valore e contesto.</div><p class="legend">La curva è interpolata: solo i punti sono misurazioni reali. La linea collega anche misurazioni distanti nel tempo, ma NON rappresenta valori misurati tra i punti. Le fasce cromatiche sono indicative e non sostituiscono gli obiettivi personalizzati del diabetologo.</p></section>`;
 }
 
 function renderMeals(entries){let meals=entries.filter(e=>e.type==='meal').sort((a,b)=>(b.date+(b.time||'')).localeCompare(a.date+(a.time||'')));return `<h1>🍽️ Archivio pasti</h1><p class="notice">I pasti registrati restano nello storico. Puoi riutilizzarli nelle caselle PA del diario.</p><div class="buttons"><button data-action="addMeal">＋ Nuovo pasto</button></div><section class="card"><h2>Pasti registrati</h2>${meals.length?meals.map(line).join(''):'<p class="muted">Nessun pasto registrato.</p>'}</section>`}
