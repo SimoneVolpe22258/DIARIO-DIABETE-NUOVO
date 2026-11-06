@@ -1,0 +1,9 @@
+DIARIO DIABETE - REVISIONE 0.2.4
+
+Caricare TUTTI i file di questo ZIP nella stessa cartella del repository GitHub Pages, sostituendo i file omonimi. Attendere la pubblicazione.
+
+Modifiche: intestazioni Glucosio / Prima / Dopo, versione 0.2.4, cache PWA v024, aggiornamento service worker senza cache HTTP, navigazione network-first con fallback offline.
+
+ATTENZIONE DATI: non disinstallare l’app, non cancellare dati del sito/Chrome, non cancellare IndexedDB. Prima della pubblicazione effettuare il backup dall'app. La chiave IndexedDB 'diario-diabete-v01' resta INVARIATA. Nessuna migrazione del database.
+
+Verifica: sul PC controllare Versione 0.2.4; sul Samsung aprire l'app con connessione Internet, chiuderla completamente e riaprirla dopo alcuni istanti. Controllare Versione 0.2.4 e intestazioni. Se non aggiorna, NON cancellare dati: segnalare versione visualizzata e screenshot.
