@@ -1,6 +1,6 @@
 'use strict';
 const KEY='diario-diabete-v01';
-const APP_VERSION='0.2.6';
+const APP_VERSION='0.2.7';
 const contexts=['A digiuno','Prima di colazione','2 ore dopo colazione','Prima di pranzo','2 ore dopo pranzo','Prima di cena','2 ore dopo cena','Prima di dormire','Misurazione libera'];
 let meds=[];let medicationNames={};
 const seed=[];
@@ -28,7 +28,14 @@ if(type==='med'&&!meds.length){alert('Prima aggiungi un farmaco nella sezione Te
 if(type==='med')fields=input('date','Data','date',v.date||date,'required')+input('time','Ora effettiva (facoltativa)','time',v.time||'')+`<label for="f_medId">Farmaco previsto</label><select id="f_medId" name="medId">${meds.map(m=>`<option value="${esc(m.id)}" ${m.id===(v.medId||context||meds[0]?.id)?'selected':''}>${esc(m.name)} · ${esc(m.dose)} (${esc(m.when)})</option>`).join('')}</select>`+select('state','Stato',['Assunto','Non assunto','Dimenticato'],v.state||'Assunto')+input('dose','Dose effettiva (se confermata)','text',v.dose||'')+`<label for="f_notes">Note</label><textarea id="f_notes" name="notes">${esc(v.notes||'')}</textarea>`;
 if(type==='medication')fields=input('name','Nome farmaco','text',v.name||'','required maxlength=120')+input('dose','Dose prescritta','text',v.dose||'','required maxlength=80')+select('when','Momento',['Colazione','Pranzo','Cena','Sera','Insulina','Altro'],v.when||'Colazione')+input('startDate','Inizio prescrizione (facoltativo)','date',v.startDate||'')+input('endDate','Fine prescrizione (facoltativa)','date',v.endDate||'')+`<label for="f_notes">Note</label><textarea id="f_notes" name="notes">${esc(v.notes||'')}</textarea>`;
 if(type==='note')fields=input('date','Data','date',v.date||date,'required')+input('time','Ora (facoltativa)','time',v.time||'')+`<label for="f_notes">Annotazione</label><textarea id="f_notes" name="notes" required>${esc(v.notes||'')}</textarea>`;
-el('dialogTitle').textContent=item?'Modifica '+({glucose:'glicemia',meal:'pasto',med:'assunzione',note:'nota',medication:'farmaco'})[type]:({glucose:'Registra glicemia',meal:'Registra pasto',med:'Registra farmaco',note:'Aggiungi nota',medication:'Configura farmaco'})[type];el('fields').innerHTML=fields;el('entryForm').onsubmit=async e=>{e.preventDefault();let data=Object.fromEntries(new FormData(e.target));if(type==='medication'){if(data.endDate&&data.startDate&&data.endDate<data.startDate){alert('La data di fine precede quella di inizio');return}let record={...data,id:item?.id||uid(),createdAt:item?.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString()};try{const storageId='medication:'+record.id;await putSetting({...record,id:storageId});const stored=(await settings()).find(x=>x.id===storageId);if(!stored||stored.name!==record.name)throw new Error('La verifica del dato salvato non è riuscita');await loadMeds();if(!meds.some(x=>x.id===record.id))throw new Error('Il farmaco non risulta nell’elenco dopo il salvataggio');el('editor').close();await render();showMessage('Farmaco salvato e verificato nel database locale.','success')}catch(err){showMessage('Salvataggio NON riuscito: '+err.message,'error');alert('Impossibile salvare il farmaco: '+err.message)}return}if(type==='glucose')data.value=Number(data.value);if(type==='med'){const prescribed=meds.find(m=>m.id===data.medId);if(data.state==='Assunto'&&!data.dose)data.dose=prescribed?.dose||'';data.medName=prescribed?.name||item?.medName||'Farmaco';}await put({...data,id:item?.id||uid(),type,createdAt:item?.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString()});el('editor').close();render()};el('editor').showModal()}
+el('dialogTitle').textContent=item?'Modifica '+({glucose:'glicemia',meal:'pasto',med:'assunzione',note:'nota',medication:'farmaco'})[type]:({glucose:'Registra glicemia',meal:'Registra pasto',med:'Registra farmaco',note:'Aggiungi nota',medication:'Configura farmaco'})[type];el('fields').innerHTML=fields;
+ const oldDelete=el('deleteGlucoseInEditor');if(oldDelete)oldDelete.remove();
+ if(type==='glucose'&&item){
+  const btn=document.createElement('button');btn.type='button';btn.id='deleteGlucoseInEditor';btn.className='danger';btn.textContent='🗑 Elimina questa misurazione';
+  btn.addEventListener('click',async()=>{const wasOpen=el('editor').open;el('editor').close();await deleteSelectedGlucose(item);if(wasOpen)await render()});
+  el('fields').appendChild(btn);
+ }
+ el('entryForm').onsubmit=async e=>{e.preventDefault();let data=Object.fromEntries(new FormData(e.target));if(type==='medication'){if(data.endDate&&data.startDate&&data.endDate<data.startDate){alert('La data di fine precede quella di inizio');return}let record={...data,id:item?.id||uid(),createdAt:item?.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString()};try{const storageId='medication:'+record.id;await putSetting({...record,id:storageId});const stored=(await settings()).find(x=>x.id===storageId);if(!stored||stored.name!==record.name)throw new Error('La verifica del dato salvato non è riuscita');await loadMeds();if(!meds.some(x=>x.id===record.id))throw new Error('Il farmaco non risulta nell’elenco dopo il salvataggio');el('editor').close();await render();showMessage('Farmaco salvato e verificato nel database locale.','success')}catch(err){showMessage('Salvataggio NON riuscito: '+err.message,'error');alert('Impossibile salvare il farmaco: '+err.message)}return}if(type==='glucose')data.value=Number(data.value);if(type==='med'){const prescribed=meds.find(m=>m.id===data.medId);if(data.state==='Assunto'&&!data.dose)data.dose=prescribed?.dose||'';data.medName=prescribed?.name||item?.medName||'Farmaco';}await put({...data,id:item?.id||uid(),type,createdAt:item?.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString()});el('editor').close();render()};el('editor').showModal()}
 function glucoseSlot(e){return {'A digiuno':'bc','Prima di colazione':'bc','2 ore dopo colazione':'ac','Prima di pranzo':'bp','2 ore dopo pranzo':'ap','Prima di cena':'bd','2 ore dopo cena':'ad'}[e.context]}
 const slotContext={bc:'Prima di colazione',ac:'2 ore dopo colazione',bp:'Prima di pranzo',ap:'2 ore dopo pranzo',bd:'Prima di cena',ad:'2 ore dopo cena'};
 function renderWeek(entries){
@@ -47,9 +54,37 @@ function renderWeek(entries){
  return `<h1>📅 Diario settimanale</h1><div class="weeknav"><button class="secondary" data-action="prev">◀</button><strong>${dateText(localDate(start))} – ${dateText(localDate(end))} ${end.getFullYear()}</strong><button class="secondary" data-action="next">▶</button></div><div class="tablewrap"><table class="week"><thead><tr><th rowspan="4" class="day">Giorno</th><th colspan="9" style="background:#d8efff">GLICEMIA (mg/dL) E PASTI</th><th colspan="5" style="background:#d8efff">TERAPIA</th><th rowspan="4" class="notes">Note</th></tr><tr>${['Colazione','Pranzo','Cena'].map((x,i)=>`<th colspan="3" class="${['breakfast','lunch','dinner'][i]}">${x}</th>`).join('')}${['Colazione','Pranzo','Cena','Sera','Insulina'].map(x=>`<th rowspan="3" class="med therapy-label">${x}</th>`).join('')}</tr><tr>${['breakfast','lunch','dinner'].map(x=>`<th colspan="2" class="${x} glucose-heading">Glucosio</th><th rowspan="2" class="${x} meal-label">Pasto</th>`).join('')}</tr><tr>${['breakfast','lunch','dinner'].map(x=>`<th class="${x} glucose-label">Prima</th><th class="${x} glucose-label">Dopo</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table></div><p class="legend">Glucosio: Prima = prima del pasto · Dopo = 2 ore dopo · Pasto = pasto (✓ registrato). Tocca una casella per vedere o modificare. Scorri lateralmente per tutte le colonne.</p><div class="buttons"><button data-action="addGlucose">＋ Glicemia</button><button data-action="addMeal" class="secondary">＋ Pasto</button><button data-action="addMed" class="secondary">＋ Farmaco</button></div>`;
 }
 function renderMeals(entries){let meals=entries.filter(e=>e.type==='meal').sort((a,b)=>(b.date+(b.time||'')).localeCompare(a.date+(a.time||'')));return `<h1>🍽️ Archivio pasti</h1><p class="notice">I pasti registrati restano nello storico. Puoi riutilizzarli nelle caselle PA del diario.</p><div class="buttons"><button data-action="addMeal">＋ Nuovo pasto</button></div><section class="card"><h2>Pasti registrati</h2>${meals.length?meals.map(line).join(''):'<p class="muted">Nessun pasto registrato.</p>'}</section>`}
+// Gestione puntuale della singola registrazione: nessuna cancellazione automatica.
+async function deleteSelectedGlucose(item){
+ if(!item||item.type!=='glucose')return;
+ const message=`Eliminare SOLO questa misurazione?\n\n${item.date} · ${item.time||'ora non indicata'}\n${item.context} · ${item.value} mg/dL\n\nLe altre registrazioni rimarranno invariate. L'eliminazione sarà sincronizzata se hai attivato Supabase.\n\nPrima di eliminare, conserva un backup JSON dalla sezione Dati.`;
+ if(!confirm(message))return;
+ try{
+  await del(item.id);
+  const remaining=await all();
+  if(remaining.some(e=>e.id===item.id))throw new Error('La registrazione risulta ancora presente nell’archivio locale');
+  await render();
+  showMessage('Misurazione eliminata dall’archivio locale. Verifica nuovamente dopo la sincronizzazione.', 'success');
+ }catch(err){alert('Eliminazione non riuscita: '+err.message)}
+}
 function chooseEntry(matches,type,date,context){
  if(matches.length===1){openEditor(type,date,context,matches[0]);return}
- if(matches.length>1){let choice=prompt('Più registrazioni nella casella. Inserisci il numero da modificare (0 = annulla):\n'+matches.map((x,i)=>`${i+1}. ${type==='glucose'?x.value+' mg/dL':x.food} ${x.time||''}`).join('\n'));let n=Number(choice);if(Number.isInteger(n)&&n>=1&&n<=matches.length)openEditor(type,date,context,matches[n-1]);return}
+ if(matches.length>1){
+  const details=matches.map((x,i)=>`${i+1}. ${type==='glucose'?x.value+' mg/dL':x.food} · ${x.time||'ora non indicata'}${x.notes?' · '+x.notes:''}`).join('\n');
+  const choice=prompt('Più registrazioni nella casella:\n'+details+'\n\nScrivi il NUMERO per modificarne una.\nScrivi E seguito dal numero per ELIMINARLA (esempio E2).\n0 = annulla.');
+  if(choice===null)return;
+  const answer=choice.trim().toUpperCase();
+  if(/^E[1-9][0-9]*$/.test(answer)&&type==='glucose'){
+   const index=Number(answer.slice(1))-1;
+   if(index>=0&&index<matches.length)void deleteSelectedGlucose(matches[index]);
+   else alert('Numero non valido.');
+   return;
+  }
+  const n=Number(answer);
+  if(answer!==''&&Number.isInteger(n)&&n>=1&&n<=matches.length)openEditor(type,date,context,matches[n-1]);
+  else if(answer!=='0')alert('Scelta non valida. Usa un numero oppure E seguito dal numero da eliminare.');
+  return;
+ }
  openEditor(type,date,context);
 }
 function openMealChooser(date,context,entries){

@@ -1,8 +1,8 @@
 'use strict';
 // Solo cache applicativa: NON cancellare IndexedDB, localStorage o cache di altre app.
-const CACHE='diario-diabete-v026';
+const CACHE='diario-diabete-v027';
 const PREFIX='diario-diabete-v';
-const ASSETS=['./','./index.html','./app.js?v=026','./sync.js?v=026','./style.css?v=026','./manifest.webmanifest','./icon.svg'];
+const ASSETS=['./','./index.html','./app.js?v=027','./sync.js?v=027','./style.css?v=027','./manifest.webmanifest','./icon.svg'];
 self.addEventListener('install',event=>{
  event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)).then(()=>self.skipWaiting()));
 });
