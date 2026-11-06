@@ -1,0 +1,4 @@
+Versione 0.3.0 - Correzione apertura Curva glicemica su Android.
+Corretto errore JavaScript nella generazione delle etichette temporali (tickCount).
+Firma by Simone Volpe nell’intestazione comune a tutte le pagine.
+Prima di aggiornare esportare backup JSON dal Samsung. Non cancellare dati del sito.

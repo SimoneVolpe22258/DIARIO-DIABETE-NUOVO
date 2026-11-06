@@ -65,7 +65,8 @@ function renderCurve(entries){
  let low=Math.min(...pts.map(x=>x.v),70),high=Math.max(...pts.map(x=>x.v),180),minY=Math.max(0,Math.floor((low-25)/50)*50),maxY=Math.ceil((high+25)/50)*50;if(maxY<=minY)maxY=minY+100;
  const X=t=>L+(t-minT)/(maxT-minT)*plotW,Y=v=>T+(maxY-v)/(maxY-minY)*plotH;
  const grid=Array.from({length:6},(_,i)=>{let v=minY+(maxY-minY)*i/5,y=Y(v);return `<line x1="${L}" y1="${y}" x2="${W-R}" y2="${y}" stroke="#e5edf5"/><text x="${L-9}" y="${y+4}" text-anchor="end" font-size="12" fill="#52647a">${Math.round(v)}</text>`}).join('');
- const ticks=Array.from({length:Math.min(chartDays,7)+1},(_,i,arr)=>{let t=minT+(maxT-minT)*i/(arr.length-1),x=X(t),d=new Date(t);return `<text x="${x}" y="${H-26}" text-anchor="middle" font-size="11" fill="#52647a">${d.toLocaleDateString('it-IT',{day:'2-digit',month:'2-digit'})}</text>`}).join('');
+ const tickCount=Math.min(chartDays,7)+1;
+ const ticks=Array.from({length:tickCount},(_,i)=>{let t=minT+(maxT-minT)*i/(tickCount-1),x=X(t),d=new Date(t);return `<text x="${x}" y="${H-26}" text-anchor="middle" font-size="11" fill="#52647a">${d.toLocaleDateString('it-IT',{day:'2-digit',month:'2-digit'})}</text>`}).join('');
  // Spezzare i tratti oltre 8 ore: non rappresentiamo un monitoraggio continuo.
  let groups=[],group=[];for(const point of pts){if(group.length&&(point.t-group[group.length-1].t)>8*3600000){groups.push(group);group=[]}group.push(point)}if(group.length)groups.push(group);
  let paths='';for(const g of groups){if(g.length<2)continue;
