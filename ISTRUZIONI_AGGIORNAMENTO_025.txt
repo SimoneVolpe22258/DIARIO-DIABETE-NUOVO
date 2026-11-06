@@ -1,0 +1,7 @@
+DIARIO DIABETE v0.2.5 – Intestazioni tabella
+
+Modifiche: PA -> Pasto (nelle tre colonne dei pasti); TERAPIA: Colazione, Pranzo, Cena, Sera, Insulina.
+Dimensioni delle intestazioni ridotte. Versione e cache PWA aggiornate a 0.2.5.
+Nessuna modifica alle registrazioni, allo schema del database o alla sincronizzazione.
+
+Pubblicare tutti i file del pacchetto su GitHub Pages. Eseguire prima un backup dal Samsung. Non cancellare i dati del sito, non disinstallare la PWA.
