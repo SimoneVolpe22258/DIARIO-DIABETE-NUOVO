@@ -27,7 +27,7 @@ async function logout(){if(!confirm('Disconnettere Supabase? I dati locali rimar
 async function list(table){let result=[];for(let offset=0;offset<100000;offset+=500){let page=await req(`${table}?select=*&order=creato_il.asc&limit=500&offset=${offset}`);result.push(...page);if(page.length<500)break;}return result}
 function tableId(store,item){return store==='settings'?item.id.slice('medication:'.length):item.id}
 function localId(store,id){return store==='settings'?'medication:'+id:id}
-function rowFrom(store,item){let clean={...item};delete clean._dirty;delete clean._remoteVersion;delete clean._deleted;return {id:tableId(store,item),user_id:session.user.id,...(store==='entries'?{tipo:item.type}:{}),dati:clean,modificato_il:item.updatedAt||item.createdAt||new Date().toISOString(),eliminato:!!item._deleted}}
+function rowFrom(store,item){let clean={...item};delete clean._dirty;delete clean._remoteVersion;delete clean._deleted;delete clean._conflict;return {id:tableId(store,item),user_id:session.user.id,...(store==='entries'?{tipo:item.type}:{}),dati:clean,modificato_il:item.updatedAt||item.createdAt||new Date().toISOString(),eliminato:!!item._deleted}}
 async function pullTable(store,table){
  const remote=await list(table);let remoteById=new Map(remote.map(r=>[r.id,r]));
  const locals=(await getAll(store)).filter(x=>store==='entries'||x.id.startsWith('medication:'));

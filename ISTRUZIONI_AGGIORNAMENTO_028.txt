@@ -1,0 +1,11 @@
+Diario Diabete v0.2.8 - gestione prudente dei conflitti
+
+PRIMA DI AGGIORNARE: dal Samsung esportare un backup JSON e conservarlo fuori dall’app.
+Caricare tutti i file della distribuzione su GitHub Pages. NON disinstallare la PWA, NON cancellare dati sito/IndexedDB.
+
+Le copie locali marcate _conflict vengono escluse dalle viste normali e dai controlli duplicati, ma NON eliminate.
+In Dati > Copie locali da verificare si possono consultare. Il backup JSON include ancora tutte le copie.
+Le registrazioni con _deleted=true erano già escluse dalle viste in v0.2.7.
+
+LIMITI: non è stata effettuata prova sul database Supabase reale né sul Samsung.
+Non ripristinare vecchi backup prima di verificare lo stato dei dati su entrambi i dispositivi.
