@@ -1,0 +1,11 @@
+DIARIO DIABETE v0.3.3 – PESO E CURVA PESO
+
+1. Prima di aggiornare, esportare il backup JSON dal Samsung.
+2. Pubblicare tutti i file di questo ZIP su GitHub Pages.
+3. Non disinstallare la PWA e non cancellare dati del sito o IndexedDB.
+4. Verificare Versione 0.3.3.
+5. In Diario > Tabella toccare la casella Peso; una pesata al giorno, modificabile o eliminabile.
+6. In Diario > Curva peso verificare grafico e statistiche.
+7. Sincronizzare su Samsung e PC e controllare che il peso sia identico.
+
+Le pesate sono salvate come registrazioni tipo weight e incluse nel backup JSON.
