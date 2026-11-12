@@ -1,0 +1,3 @@
+Diario Diabete v0.3.5 — Report cronologico per giornata.
+Prima di aggiornare, esportare il backup JSON. Pubblicare i file sul repository GitHub Pages. Non cancellare i dati del sito o disinstallare la PWA.
+Il PDF mantiene riepilogo, grafici e terapia configurata, poi mostra tutte le registrazioni selezionate raggruppate per data e ordinate per ora.

@@ -1,6 +1,6 @@
 'use strict';
 const KEY='diario-diabete-v01';
-const APP_VERSION='0.3.4';
+const APP_VERSION='0.3.5';
 const contexts=['A digiuno','Prima di colazione','2 ore dopo colazione','Prima di pranzo','2 ore dopo pranzo','Prima di cena','2 ore dopo cena','Prima di dormire','Misurazione libera'];
 let meds=[];let medicationNames={};
 const seed=[];
