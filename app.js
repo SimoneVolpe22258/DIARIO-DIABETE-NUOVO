@@ -1,6 +1,6 @@
 'use strict';
 const KEY='diario-diabete-v01';
-const APP_VERSION='0.3.5';
+const APP_VERSION='0.3.6';
 const contexts=['A digiuno','Prima di colazione','2 ore dopo colazione','Prima di pranzo','2 ore dopo pranzo','Prima di cena','2 ore dopo cena','Prima di dormire','Misurazione libera'];
 let meds=[];let medicationNames={};
 const seed=[];
@@ -120,11 +120,17 @@ function chooseEntry(matches,type,date,context){
   const choice=prompt('Più registrazioni nella casella:\n'+details+'\n\nScrivi il NUMERO per modificarne una.\nScrivi E seguito dal numero per ELIMINARLA (esempio E2).\n0 = annulla.');
   if(choice===null)return;
   const answer=choice.trim().toUpperCase();
-  if(/^E[1-9][0-9]*$/.test(answer)&&type==='glucose'){
+  if(/^E[1-9][0-9]*$/.test(answer)){
    const index=Number(answer.slice(1))-1;
-   if(index>=0&&index<matches.length)void deleteSelectedGlucose(matches[index]);
-   else alert('Numero non valido.');
-   return;
+   if(index<0||index>=matches.length){alert('Numero non valido.');return;}
+   if(type==='glucose'){void deleteSelectedGlucose(matches[index]);return;}
+   if(type==='meal'){
+    const selected=matches[index];
+    if(confirm(`Eliminare SOLO questo pasto?\n\n${selected.date} · ${selected.time||'ora non indicata'}\n${selected.context}: ${selected.food}\n\nGli altri pasti resteranno invariati. L’eliminazione sarà sincronizzata.`)){
+     void (async()=>{try{await del(selected.id);await render();showMessage('Pasto eliminato. Le altre registrazioni sono state conservate.','success')}catch(err){alert('Eliminazione non riuscita: '+err.message)}})();
+    }
+    return;
+   }
   }
   const n=Number(answer);
   if(answer!==''&&Number.isInteger(n)&&n>=1&&n<=matches.length)openEditor(type,date,context,matches[n-1]);

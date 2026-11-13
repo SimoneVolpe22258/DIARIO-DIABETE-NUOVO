@@ -1,0 +1,3 @@
+Diario Diabete v0.3.6 — Correzione eliminazione pasti duplicati.
+Nella scelta di più pasti nella stessa casella, E1/E2/... elimina solo il pasto indicato, dopo conferma.
+Prima di aggiornare esportare backup JSON. Pubblicare tutti i file sul repository GitHub Pages. Non cancellare i dati del sito e non disinstallare la PWA.
